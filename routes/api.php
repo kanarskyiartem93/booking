@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\MainController;
+use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\HotelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(['prefix' => 'hotels'], function (){
+    Route::get('/', [HotelController::class, 'index']);
+    Route::get('/random', [HotelController::class, 'random']);
+});
+
+Route::group(['prefix' => 'cities'], function (){
+    Route::get('/', [CityController::class, 'index']);
+});
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::get('/get', [MainController::class, 'index']);
+
 });
 

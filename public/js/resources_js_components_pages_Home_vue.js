@@ -57,14 +57,56 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
   data: function data() {
     return {
-      items: [1, 2, 3, 4, 5, 6, 7]
+      hotels: null,
+      cities: null,
+      cityId: null
     };
   },
-  methods: {}
+  mounted: function mounted() {
+    this.getRandomHotels();
+    this.getCities();
+  },
+  methods: {
+    getRandomHotels: function getRandomHotels() {
+      var _this = this;
+
+      axios.get('/api/hotels/random').then(function (res) {
+        _this.hotels = res.data.data;
+      });
+    },
+    getCities: function getCities() {
+      var _this2 = this;
+
+      axios.get('/api/cities').then(function (res) {
+        _this2.cities = res.data.data;
+      });
+    }
+  },
+  watch: {
+    cityId: function cityId() {
+      var _this3 = this;
+
+      axios.get('/api/hotels', {
+        params: {
+          city_id: this.cityId
+        }
+      }).then(function (res) {
+        console.log(res.data.data);
+        _this3.hotels = res.data.data;
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -156,14 +198,112 @@ var render = function () {
   return _c("div", [
     _c("div", { staticClass: "container-fluid" }, [
       _c("div", { staticClass: "row flex-nowrap" }, [
-        _vm._m(0),
+        _c(
+          "div",
+          { staticClass: "col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark" },
+          [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100",
+              },
+              [
+                _vm._m(0),
+                _vm._v(" "),
+                _c(
+                  "ul",
+                  {
+                    staticClass:
+                      "nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start",
+                    attrs: { id: "menu" },
+                  },
+                  [
+                    _c("li", [
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.cityId,
+                              expression: "cityId",
+                            },
+                          ],
+                          on: {
+                            change: function ($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function (o) {
+                                  return o.selected
+                                })
+                                .map(function (o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.cityId = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            },
+                          },
+                        },
+                        [
+                          _c("option", { attrs: { disabled: "", value: "" } }, [
+                            _vm._v("Please select one"),
+                          ]),
+                          _vm._v(" "),
+                          _vm._l(_vm.cities, function (city) {
+                            return _c(
+                              "option",
+                              { domProps: { value: city.id } },
+                              [_vm._v(_vm._s(city.name))]
+                            )
+                          }),
+                        ],
+                        2
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(1),
+                  ]
+                ),
+                _vm._v(" "),
+                _c("hr"),
+              ]
+            ),
+          ]
+        ),
         _vm._v(" "),
         _c(
           "div",
           { staticClass: "col" },
-          _vm._l(_vm.items, function (item) {
+          _vm._l(_vm.hotels, function (hotel) {
             return _c("div", { staticClass: "card card-item mb-3" }, [
-              _vm._m(1, true),
+              _c("div", { staticClass: "row" }, [
+                _vm._m(2, true),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-8" }, [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("h5", { staticClass: "card-title" }, [
+                      _vm._v(_vm._s(hotel.name)),
+                    ]),
+                    _vm._v(" "),
+                    _c("p", { staticClass: "card-text" }, [
+                      _vm._v(_vm._s(hotel.description)),
+                    ]),
+                    _vm._v(" "),
+                    _c("p", { staticClass: "card-text" }, [
+                      _c("b", [_vm._v(_vm._s(hotel.city))]),
+                    ]),
+                    _vm._v(" "),
+                    _c("p", { staticClass: "card-text" }, [
+                      _c("small", { staticClass: "text-muted" }, [
+                        _vm._v(_vm._s(hotel.address)),
+                      ]),
+                    ]),
+                  ]),
+                ]),
+              ]),
             ])
           }),
           0
@@ -178,112 +318,45 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c(
-      "div",
-      { staticClass: "col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark" },
-      [
-        _c(
-          "div",
-          {
-            staticClass:
-              "d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100",
-          },
-          [
-            _c(
-              "a",
-              {
-                staticClass:
-                  "d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none",
-                attrs: { href: "/" },
-              },
-              [
-                _c("span", { staticClass: "fs-5 d-none d-sm-inline" }, [
-                  _vm._v("Menu"),
-                ]),
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "ul",
-              {
-                staticClass:
-                  "nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start",
-                attrs: { id: "menu" },
-              },
-              [
-                _c("li", [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "nav-link px-0 align-middle",
-                      attrs: { href: "#" },
-                    },
-                    [
-                      _c("i", { staticClass: "fs-4 bi-table" }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "ms-1 d-none d-sm-inline" }, [
-                        _vm._v("Orders"),
-                      ]),
-                    ]
-                  ),
-                ]),
-                _vm._v(" "),
-                _c("li", [
-                  _c(
-                    "a",
-                    {
-                      staticClass: "nav-link px-0 align-middle",
-                      attrs: { href: "#" },
-                    },
-                    [
-                      _c("i", { staticClass: "fs-4 bi-people" }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "ms-1 d-none d-sm-inline" }, [
-                        _vm._v("Customers"),
-                      ]),
-                    ]
-                  ),
-                ]),
-              ]
-            ),
-            _vm._v(" "),
-            _c("hr"),
-          ]
-        ),
-      ]
+      "a",
+      {
+        staticClass:
+          "d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none",
+        attrs: { href: "/" },
+      },
+      [_c("span", { staticClass: "fs-5 d-none d-sm-inline" }, [_vm._v("Menu")])]
     )
   },
   function () {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-4" }, [
-        _c("img", {
-          staticClass: "card-img",
-          attrs: {
-            src: "http://seonkyounglongest.com/wp-content/uploads/2018/04/shoyu-ramen-1.jpg",
-            alt: "...",
-          },
-        }),
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-8" }, [
-        _c("div", { staticClass: "card-body" }, [
-          _c("h5", { staticClass: "card-title" }, [_vm._v("Card title")]),
+    return _c("li", [
+      _c(
+        "a",
+        { staticClass: "nav-link px-0 align-middle", attrs: { href: "#" } },
+        [
+          _c("i", { staticClass: "fs-4 bi-people" }),
           _vm._v(" "),
-          _c("p", { staticClass: "card-text" }, [
-            _vm._v(
-              "This is a wider card with supporting text below as a natural lead-in to\n                                        additional content. This content is a little bit longer."
-            ),
+          _c("span", { staticClass: "ms-1 d-none d-sm-inline" }, [
+            _vm._v("Customers"),
           ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "card-text" }, [
-            _c("small", { staticClass: "text-muted" }, [
-              _vm._v("Last updated 3 mins ago"),
-            ]),
-          ]),
-        ]),
-      ]),
+        ]
+      ),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-4" }, [
+      _c("img", {
+        staticClass: "card-img",
+        attrs: {
+          src: "https://pix8.agoda.net/hotelImages/124/1246280/1246280_16061017110043391702.jpg",
+          alt: "...",
+        },
+      }),
     ])
   },
 ]

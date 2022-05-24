@@ -14,4 +14,15 @@ class Hotel extends Model
         return $this->hasMany(Room::class, 'hotel_id');
     }
 
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function scopeFilterByCity($query, $cityId)
+    {
+        if ($cityId) {
+            return $query->where('city_id', $cityId);
+        }
+    }
 }
