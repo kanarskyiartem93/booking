@@ -22,7 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
 
 
-            $table->foreign('user_id', 'booking_user_fk')
+            $table->foreign('user_id', 'booking_hotel_fk')
                 ->on('users')
                 ->references('id');
             $table->foreign('city_id', 'hotel_city_fk')
