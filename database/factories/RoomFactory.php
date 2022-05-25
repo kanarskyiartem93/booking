@@ -18,7 +18,6 @@ class RoomFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->firstName(),
             'room_type_id' => RoomType::all()->random()->id
         ];
     }

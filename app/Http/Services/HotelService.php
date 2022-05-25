@@ -10,6 +10,8 @@ class HotelService
 {
     public function filterHotels(Request $request)
     {
-        return Hotel::filterByCity($request->city_id)->get();
+        return Hotel::filterByCity($request->city_id)
+            ->filterByCapacity($request->capacity)
+            ->get();
     }
 }

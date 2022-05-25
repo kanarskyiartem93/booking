@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Hotel\HotelItemResource;
 use App\Http\Resources\Hotel\HotelResource;
 use App\Http\Services\HotelService;
 use App\Models\Hotel;
@@ -29,5 +30,10 @@ class HotelController extends Controller
         $hotels = $this->service->filterHotels($request);
 
         return HotelResource::collection($hotels);
+    }
+
+    public function show(Hotel $hotel)
+    {
+        return new HotelItemResource($hotel);
     }
 }

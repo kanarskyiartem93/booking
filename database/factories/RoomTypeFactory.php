@@ -17,7 +17,12 @@ class RoomTypeFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->unique()->firstName,
+            'price' => $this->faker->randomFloat(0, 200, 4000),
+            'capacity' => $this->faker->randomDigitNot(0),
+            'wifi' => $this->faker->boolean,
+            'ac' => $this->faker->boolean,
+            'heater' => $this->faker->boolean,
+            'tv' => $this->faker->boolean,
         ];
     }
 }

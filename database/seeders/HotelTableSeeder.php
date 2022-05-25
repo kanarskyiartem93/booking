@@ -15,6 +15,6 @@ class HotelTableSeeder extends Seeder
      */
     public function run()
     {
-        Hotel::factory()->has(Room::factory()->count(10))->count(100)->create();
+        Hotel::factory()->has(Room::factory()->count(10))->count(300)->create();
     }
 }

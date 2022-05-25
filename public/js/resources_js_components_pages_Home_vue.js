@@ -64,14 +64,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Home",
   data: function data() {
     return {
       hotels: null,
       cities: null,
-      cityId: null
+      cityId: null,
+      capacity: null,
+      maxGuests: 10
     };
+  },
+  computed: {
+    changesOfFilter: function changesOfFilter() {
+      // `.join()` because we don't care about the return value.
+      return [this.cityId, this.capacity].join();
+    }
   },
   mounted: function mounted() {
     this.getRandomHotels();
@@ -91,18 +108,21 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/api/cities').then(function (res) {
         _this2.cities = res.data.data;
       });
+    },
+    prepareParams: function prepareParams() {
+      return {
+        params: {
+          city_id: this.cityId,
+          capacity: this.capacity
+        }
+      };
     }
   },
   watch: {
-    cityId: function cityId() {
+    changesOfFilter: function changesOfFilter() {
       var _this3 = this;
 
-      axios.get('/api/hotels', {
-        params: {
-          city_id: this.cityId
-        }
-      }).then(function (res) {
-        console.log(res.data.data);
+      axios.get('/api/hotels', this.prepareParams()).then(function (res) {
         _this3.hotels = res.data.data;
       });
     }
@@ -220,6 +240,8 @@ var render = function () {
                   },
                   [
                     _c("li", [
+                      _c("p", [_vm._v("Місто: ")]),
+                      _vm._v(" "),
                       _c(
                         "select",
                         {
@@ -255,8 +277,13 @@ var render = function () {
                           _vm._l(_vm.cities, function (city) {
                             return _c(
                               "option",
-                              { domProps: { value: city.id } },
-                              [_vm._v(_vm._s(city.name))]
+                              { key: city.id, domProps: { value: city.id } },
+                              [
+                                _vm._v(
+                                  _vm._s(city.name) +
+                                    "\n                                "
+                                ),
+                              ]
                             )
                           }),
                         ],
@@ -264,7 +291,53 @@ var render = function () {
                       ),
                     ]),
                     _vm._v(" "),
-                    _vm._m(1),
+                    _c("li", { staticClass: "mt-3" }, [
+                      _c("p", [_vm._v("Кількість гостів: ")]),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.capacity,
+                              expression: "capacity",
+                            },
+                          ],
+                          staticClass: "px-0 align-middle",
+                          on: {
+                            change: function ($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function (o) {
+                                  return o.selected
+                                })
+                                .map(function (o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.capacity = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            },
+                          },
+                        },
+                        [
+                          _c("option", { attrs: { disabled: "", value: "" } }, [
+                            _vm._v("Please select one"),
+                          ]),
+                          _vm._v(" "),
+                          _vm._l(_vm.maxGuests, function (index) {
+                            return _c(
+                              "option",
+                              { domProps: { value: index } },
+                              [_vm._v(_vm._s(index))]
+                            )
+                          }),
+                        ],
+                        2
+                      ),
+                    ]),
                   ]
                 ),
                 _vm._v(" "),
@@ -280,28 +353,48 @@ var render = function () {
           _vm._l(_vm.hotels, function (hotel) {
             return _c("div", { staticClass: "card card-item mb-3" }, [
               _c("div", { staticClass: "row" }, [
-                _vm._m(2, true),
+                _vm._m(1, true),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-8" }, [
-                  _c("div", { staticClass: "card-body" }, [
-                    _c("h5", { staticClass: "card-title" }, [
-                      _vm._v(_vm._s(hotel.name)),
-                    ]),
-                    _vm._v(" "),
-                    _c("p", { staticClass: "card-text" }, [
-                      _vm._v(_vm._s(hotel.description)),
-                    ]),
-                    _vm._v(" "),
-                    _c("p", { staticClass: "card-text" }, [
-                      _c("b", [_vm._v(_vm._s(hotel.city))]),
-                    ]),
-                    _vm._v(" "),
-                    _c("p", { staticClass: "card-text" }, [
-                      _c("small", { staticClass: "text-muted" }, [
-                        _vm._v(_vm._s(hotel.address)),
+                  _c(
+                    "div",
+                    { staticClass: "card-body" },
+                    [
+                      _c("h5", { staticClass: "card-title" }, [
+                        _vm._v(_vm._s(hotel.name)),
                       ]),
-                    ]),
-                  ]),
+                      _vm._v(" "),
+                      _c("p", { staticClass: "card-text" }, [
+                        _vm._v(_vm._s(hotel.description)),
+                      ]),
+                      _vm._v(" "),
+                      _c("p", { staticClass: "card-text" }, [
+                        _c("b", [_vm._v(_vm._s(hotel.city))]),
+                      ]),
+                      _vm._v(" "),
+                      _c("p", { staticClass: "card-text" }, [
+                        _c("small", { staticClass: "text-muted" }, [
+                          _vm._v(_vm._s(hotel.address)),
+                        ]),
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "router-link",
+                        {
+                          staticClass: "btn btn-info",
+                          attrs: {
+                            to: { name: "hotel", params: { id: hotel.id } },
+                          },
+                        },
+                        [
+                          _vm._v(
+                            "More\n                                    information\n                                "
+                          ),
+                        ]
+                      ),
+                    ],
+                    1
+                  ),
                 ]),
               ]),
             ])
@@ -324,26 +417,12 @@ var staticRenderFns = [
           "d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none",
         attrs: { href: "/" },
       },
-      [_c("span", { staticClass: "fs-5 d-none d-sm-inline" }, [_vm._v("Menu")])]
+      [
+        _c("span", { staticClass: "fs-5 d-none d-sm-inline" }, [
+          _vm._v("Фільтри"),
+        ]),
+      ]
     )
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        { staticClass: "nav-link px-0 align-middle", attrs: { href: "#" } },
-        [
-          _c("i", { staticClass: "fs-4 bi-people" }),
-          _vm._v(" "),
-          _c("span", { staticClass: "ms-1 d-none d-sm-inline" }, [
-            _vm._v("Customers"),
-          ]),
-        ]
-      ),
-    ])
   },
   function () {
     var _vm = this

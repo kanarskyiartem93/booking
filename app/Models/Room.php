@@ -19,4 +19,9 @@ class Room extends Model
         return $this->belongsTo(RoomType::class);
     }
 
+    public function capacityRooms()
+    {
+        dd($this->belongsTo(RoomType::class)->FilterByCapacity(3)->get());
+    }
+
 }

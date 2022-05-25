@@ -12,6 +12,10 @@ const router = new VueRouter({
             name: 'home'
         },
         {
+            path: '/hotels/:id', component: () => import('./components/pages/Hotel'),
+            name: 'hotel'
+        },
+        {
             path: '/user/login', component: () => import('./components/pages/Login'),
             name: 'user.login'
         },
@@ -31,7 +35,7 @@ router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('x_xsrf_token')
 
     if (!token) {
-        if (to.name === 'user.login' || to.name === 'user.registration' || to.name === 'home') {
+        if (to.name === 'user.login' || to.name === 'user.registration' || to.name === 'home' || to.name === 'hotel') {
             return next()
         } else {
             return next({
@@ -40,7 +44,7 @@ router.beforeEach((to, from, next) => {
         }
     }
 
-    if (to.name === 'user.login' || to.name === 'user.registration' && token) {
+    if (to.name === 'user.login' || to.name === 'user.registration' || to.name === 'home' && token) {
         return next({
             name: 'user.personal'
         })

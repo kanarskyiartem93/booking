@@ -7,20 +7,26 @@
                         class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
                         <a href="/"
                            class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                            <span class="fs-5 d-none d-sm-inline">Menu</span>
+                            <span class="fs-5 d-none d-sm-inline">Фільтри</span>
                         </a>
                         <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
                             id="menu">
                             <li>
+                                <p>Місто: </p>
                                 <select v-model="cityId">
                                     <option disabled value="">Please select one</option>
-                                    <option v-for="city in cities" :value="city.id">{{ city.name }}</option>
+                                    <option v-for="city in cities" :key="city.id" :value="city.id">{{
+                                            city.name
+                                        }}
+                                    </option>
                                 </select>
                             </li>
-                            <li>
-                                <a href="#" class="nav-link px-0 align-middle">
-                                    <i class="fs-4 bi-people"></i> <span
-                                    class="ms-1 d-none d-sm-inline">Customers</span> </a>
+                            <li class="mt-3">
+                                <p>Кількість гостів: </p>
+                                <select v-model="capacity" class="px-0 align-middle">
+                                    <option disabled value="">Please select one</option>
+                                    <option v-for="index in maxGuests" :value="index">{{ index }}</option>
+                                </select>
                             </li>
                         </ul>
                         <hr>
@@ -40,6 +46,9 @@
                                     <p class="card-text">{{ hotel.description }}</p>
                                     <p class="card-text"><b>{{ hotel.city }}</b></p>
                                     <p class="card-text"><small class="text-muted">{{ hotel.address }}</small></p>
+                                    <router-link :to="{name: 'hotel', params: {id: hotel.id}}" class="btn btn-info">More
+                                        information
+                                    </router-link>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +67,16 @@ export default {
         return {
             hotels: null,
             cities: null,
-            cityId: null
+            cityId: null,
+            capacity: null,
+            maxGuests: 10
+        }
+    },
+
+    computed: {
+        changesOfFilter() {
+            // `.join()` because we don't care about the return value.
+            return [this.cityId, this.capacity].join()
         }
     },
 
@@ -78,15 +96,23 @@ export default {
                 this.cities = res.data.data
             })
         },
+        prepareParams(){
+            return {
+                params: {
+                    city_id: this.cityId,
+                    capacity: this.capacity
+                }
+            }
+        }
 
     },
     watch: {
-        cityId: function () {
-            axios.get('/api/hotels', {params: {city_id: this.cityId}}).then(res => {
-                console.log(res.data.data);
+        changesOfFilter: function () {
+            axios.get('/api/hotels', this.prepareParams()).then(res => {
                 this.hotels = res.data.data
             })
-        }
+        },
+
     }
 }
 </script>
